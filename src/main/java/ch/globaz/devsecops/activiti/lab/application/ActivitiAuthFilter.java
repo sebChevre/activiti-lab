@@ -1,6 +1,7 @@
 package ch.globaz.devsecops.activiti.lab.application;
 
 
+import ch.globaz.devsecops.activiti.lab.application.configuration.SecurityConfiguration;
 import lombok.extern.slf4j.Slf4j;
 import org.activiti.engine.impl.identity.Authentication;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -20,15 +21,14 @@ public class ActivitiAuthFilter extends GenericFilterBean {
 
         log.info("Activiti identity filter");
 
-        UsernamePasswordAuthenticationToken authToken = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
 
-        if(authToken != null){
-            User authUser = (User) authToken.getPrincipal();
 
-            Authentication.setAuthenticatedUserId(authUser.getUsername());
+        String username = SecurityConfiguration.getLoggedUsername();
 
-            log.info("Identity set for activiti: {}", authUser.getUsername());
-        }
+        Authentication.setAuthenticatedUserId(username);
+
+        log.info("Identity set for activiti: {}", username);
+
 
 
         filterChain.doFilter(servletRequest,servletResponse);
